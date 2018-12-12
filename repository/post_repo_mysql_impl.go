@@ -10,6 +10,10 @@ type mysqlPostRepo struct {
 	Db *sql.DB
 }
 
+func NewMysqlPostRepo(db *sql.DB) *mysqlPostRepo {
+	return &mysqlPostRepo{Db: db}
+}
+
 func (repo *mysqlPostRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*model.Post, error) {
 	//context 是什么
 	rows, err := repo.Db.QueryContext(ctx, query, args...)
@@ -19,7 +23,6 @@ func (repo *mysqlPostRepo) fetch(ctx context.Context, query string, args ...inte
 	}
 	data := make([]*model.Post, 0)
 	for rows.Next() {
-		//new 和 make的区别
 		row := new(model.Post)
 		err := rows.Scan(
 			&row.ID,
@@ -41,7 +44,7 @@ func (repo *mysqlPostRepo) Fetch(ctx context.Context, num int64) ([]*model.Post,
 }
 
 func (repo *mysqlPostRepo) FindById(ctx context.Context, id int64) (*model.Post, error) {
-	query := "select id, title, content From posts where id=?"
+	query := "Select id, title, content From posts where id=?"
 	rows, e := repo.fetch(ctx, query)
 	if e != nil {
 		return nil, e
@@ -68,7 +71,7 @@ func (repo *mysqlPostRepo) Create(ctx context.Context, post *model.Post) (int64,
 }
 
 func (repo *mysqlPostRepo) Update(ctx context.Context, post *model.Post) (*model.Post, error) {
-	query := "Update posts set title=?, content=? where id=?"
+	query := "Update posts Set title=?, content=? where id=?"
 	stmt, err := repo.Db.PrepareContext(ctx, query)
 	defer stmt.Close()
 	if err != nil {
