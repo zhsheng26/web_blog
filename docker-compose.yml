@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  web:
+    build: .
+    ports:
+      - 8080:8005
+    environment:
+      - "DB_NAME=web_blog"
+      - "DB_PASS=12345"
+      - "DB_HOST=mysql_db"
+      - "DB_PORT=3306"
+    depends_on:
+      - mysql_db
+  mysql_db:
+    image: mysql:5.7
+#   command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+    volumes:
+      - /Users/zhangsheng/Docker/app1/mysql:/var/lib/mysql
+      - /Users/zhangsheng/Go/WorkPlace/src/web_blog/custom:/etc/mysql/conf.d

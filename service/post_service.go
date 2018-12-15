@@ -32,9 +32,10 @@ func (ps *PostService) Create(w http.ResponseWriter, r *http.Request) {
 	newId, err := ps.repo.Create(r.Context(), &post)
 	fmt.Println(newId)
 	if err != nil {
-		responseWithError(w, http.StatusInternalServerError, "server error")
+		responseWithError(w, http.StatusInternalServerError, "server error:"+err.Error())
+	} else {
+		responseWithJson(w, http.StatusOK, map[string]string{"message": "Created Successfully"})
 	}
-	responseWithJson(w, http.StatusOK, map[string]string{"message": "Created Successfully"})
 }
 
 func (ps *PostService) Update(w http.ResponseWriter, r *http.Request) {
@@ -44,8 +45,9 @@ func (ps *PostService) Update(w http.ResponseWriter, r *http.Request) {
 	payload, err := ps.repo.Update(r.Context(), &post)
 	if err != nil {
 		responseWithError(w, http.StatusInternalServerError, "Server Error")
+	} else {
+		responseWithJson(w, http.StatusOK, payload)
 	}
-	responseWithJson(w, http.StatusOK, payload)
 }
 
 func (ps *PostService) FindById(w http.ResponseWriter, r *http.Request) {
@@ -53,16 +55,18 @@ func (ps *PostService) FindById(w http.ResponseWriter, r *http.Request) {
 	post, err := ps.repo.FindById(r.Context(), int64(id))
 	if err != nil {
 		responseWithError(w, http.StatusNoContent, "Content not found")
+	} else {
+		responseWithJson(w, http.StatusOK, post)
 	}
-	responseWithJson(w, http.StatusOK, post)
 }
 func (ps *PostService) Delete(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	_, err := ps.repo.Delete(r.Context(), int64(id))
 	if err != nil {
 		responseWithError(w, http.StatusInternalServerError, "Server Error")
+	} else {
+		responseWithJson(w, http.StatusOK, map[string]string{"message": "Delete Successfully"})
 	}
-	responseWithJson(w, http.StatusOK, map[string]string{"message": "Delete Successfully"})
 }
 
 func responseWithJson(writer http.ResponseWriter, code int, resp interface{}) {

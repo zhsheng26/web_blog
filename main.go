@@ -10,16 +10,12 @@ import (
 	"web_blog/support"
 )
 
-const (
-	dbName = "web_blog"
-	dbUsr  = "root"
-	dbPass = "rootpw"
-	dbHost = "localhost"
-	dbPort = "3306"
-)
-
 func main() {
-	connectSQL, err := support.ConnectSQL(dbHost, dbPort, dbUsr, dbPass, dbName)
+	dbName := os.Getenv("DB_NAME")
+	dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	connectSQL, err := support.ConnectSQL(dbHost, dbPort, "root", dbPass, dbName)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
