@@ -3,38 +3,39 @@ package main
 import (
 	"fmt"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 	"net/http"
 	"os"
 	"web_blog/service"
 	"web_blog/support"
 )
 
-//const (
-//	dbName = "web_blog"
-//	dbPass = "rootpw"
-//	dbHost = "localhost"
-//	dbPort = "3306"
-//)
+const (
+	dbName = "web_blog"
+	dbPass = "rootpw"
+	dbHost = "localhost"
+	dbPort = "3306"
+)
 
 func main() {
-	dbName := os.Getenv("DB_NAME")
-	dbPass := os.Getenv("DB_PASS")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
+	//dbName := os.Getenv("DB_NAME")
+	//dbPass := os.Getenv("DB_PASS")
+	//dbHost := os.Getenv("DB_HOST")
+	//dbPort := os.Getenv("DB_PORT")
 	connectSQL, err := support.ConnectSQL(dbHost, dbPort, "root", dbPass, dbName)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
-	postService := service.NewPostService(connectSQL)
-	router.Route("/", func(r chi.Router) {
-		r.Mount("/post", postHandler(postService))
-	})
-	err = http.ListenAndServe(":8005", router)
+	//postService := service.NewPostService(connectSQL)
+	//router.Route("/", func(r chi.Router) {
+	//	r.Mount("/post", postHandler(postService))
+	//})
+	//router.Route("/", func(r chi.Router) {
+	//	r.Mount("/page", pageHandler(pageService))
+	//})
+	pageService := service.NewPageService(connectSQL)
+	http.HandleFunc("/page", pageService.Posts)
+	err = http.ListenAndServe(":8005", nil)
 	fmt.Println(err)
 }
 

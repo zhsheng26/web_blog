@@ -40,7 +40,7 @@ func (ps *PostService) Create(w http.ResponseWriter, r *http.Request) {
 
 func (ps *PostService) Update(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	post := models.Post{ID: int64(id)}
+	post := models.Post{Id: int64(id)}
 	json.NewDecoder(r.Body).Decode(&post)
 	payload, err := ps.repo.Update(r.Context(), &post)
 	if err != nil {

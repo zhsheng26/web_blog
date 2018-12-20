@@ -25,7 +25,7 @@ func (repo *mysqlPostRepo) fetch(ctx context.Context, query string, args ...inte
 	for rows.Next() {
 		row := new(model.Post)
 		err := rows.Scan(
-			&row.ID,
+			&row.Id,
 			&row.Title,
 			&row.Content,
 		)
@@ -81,7 +81,7 @@ func (repo *mysqlPostRepo) Update(ctx context.Context, post *model.Post) (*model
 		ctx,
 		post.Title,
 		post.Content,
-		post.ID,
+		post.Id,
 	)
 	if err != nil {
 		return nil, err
